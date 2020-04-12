@@ -1,0 +1,15 @@
+.card_head{
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 30px;
+}
+.card-title{
+	text-align: center;
+	text-transform: uppercase;
+
+}
+.text-white{
+	font-size: 20px;
+	font-weight: bold;
+}

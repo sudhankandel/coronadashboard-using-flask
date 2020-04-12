@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
+       <script src="{{ url_for('static', filename='js/selectize.min.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" media="all">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" media="all">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/selectize.bootstrap3.min.css') }}" media="all">
+    <!-- Bootstrap CSS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <title>covid-19 live</title>
+  </head>
+  <body>
+  <!-- Load Facebook SDK for JavaScript -->
+      <div id="fb-root"></div>
+      <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            xfbml            : true,
+            version          : 'v6.0'
+          });
+        };
+        (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));</script>
+      <!-- Your customer chat code -->
+      <div class="fb-customerchat"
+        attribution=setup_tool
+        page_id="106638877642615"
+  theme_color="#fa3c4c">
+      </div>
+   <nav class="navbar navbar-dark bg-primary sticky-top">
+          <a class="navbar-brand" href="/">COVID-19 Live update</a>
+   </nav>
+
+   <div class="row row-cols-1 row-cols-md-3 ml-1 mr-1 mt-2 ">
+  <div class="col mb-4">
+    <div class="card bg-info">
+      <div class="card-body">
+        <h5 class="card-title card_head">Nepal Update</h5>
+          <ul class="list-group ">
+      <li class="text-white bg-info list-group-item d-flex justify-content-between align-items-center">
+        Total Test
+        <span class=" badge bg-warning badge-pill">{{nepaldata.tested_total}}</span>
+      </li>
+      <li class="text-white bg-info list-group-item d-flex justify-content-between align-items-center">
+        Total Negative
+        <span class="badge bg-success badge-pill">{{nepaldata.tested_negative}}</span>
+      </li>
+      <li class="text-white bg-info list-group-item d-flex justify-content-between align-items-center">
+        Total Positive
+        <span class="badge bg-danger badge-pill">{{nepaldata.tested_positive}}</span>
+      </li>
+    </ul>
+
+      </div>
+    </div>
+        <div class="card mt-2 overflow-auto bg-info" style="height:314px;">
+      <div class="card-body ">
+
+        <h5 class="card-title ">Global News Update</h5>
+
+            {% for i in range(50)%}
+          <li>{{global_news[i]}}</li>
+          {% endfor %}
+
+      </div>
+    </div>
+  </div>
+  <div class="col mb-4">
+    <div class="card overflow-auto bg-info" style="height:580px;" >
+      <div class="card-body" >
+    <input class="form-control mr-sm-2 mb-1 bg-info" id="myInput" onkeyup="myFunction()" type="search" placeholder="Search for country..." aria-label="Search">
+          <table id="myTable" class="table table-hover  table-bordered">
+                <tr class="thead-dark sticky-top">
+                 {% for key in table_data[0] %}
+                 <th  style="width:2%;"> {{ key }} </th>
+                 {% endfor %}
+                </tr>
+                {% for dict_item in table_data %}
+                <tr class="table-info">
+                 {% for value in dict_item.values() %}
+                 <td> {{ value }} </td>
+                 {% endfor %}
+                </tr>
+                {% endfor %}
+                </table>
+      </div>
+    </div>
+  </div>
+  <div class="col mb-4">
+    <div class="card bg-info">
+      <div class="card-body">
+        <h5 class="card-title card_head">Global Update</h5>
+          <li class="text-white bg-info list-group-item d-flex justify-content-between align-items-center">
+    Total case
+    <span class="badge bg-warning badge-pill">{{globaldata[0]}}</span>
+  </li>
+  <li class="text-white bg-info list-group-item d-flex justify-content-between align-items-center">
+    Total Recover
+    <span class="badge bg-success badge-pill">{{globaldata[2]}}</span>
+  </li>
+  <li class="text-white bg-info list-group-item d-flex justify-content-between align-items-center">
+    Total Death
+    <span class="badge bg-danger badge-pill">{{globaldata[1]}}</span>
+  </li>
+      </div>
+    </div>
+      <div class="card mt-2 bg-info overflow-auto">
+      <div class="card-body" style="height:314px;">
+        <h5 class="card-title">select country in table for more update</h5>
+              <li id="country" class="bg-info list-group-item d-flex justify-content-between align-items-center">
+              </li>
+              <li id="totalcase" class="bg-info list-group-item d-flex justify-content-between align-items-center">
+              </li>
+            <li id='totaldeath' class="bg-info list-group-item d-flex justify-content-between align-items-center">
+              </li>
+                      <li id='totalrecover' class="bg-info list-group-item d-flex justify-content-between align-items-center">
+              </li>
+                      </li>
+                      <li id='todaycase' class="bg-info list-group-item d-flex justify-content-between align-items-center">
+              </li>
+                      </li>
+                      <li id='todaydeath' class="bg-info list-group-item d-flex justify-content-between align-items-center">
+              </li>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row  ml-1 mr-1 mt-2 ">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <canvas id="bar-chart-grouped" width="800" height="450"></canvas>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+
+
+          <select class="dropdown-menus" id = "newSkill" placeholder="Select Country For More Visualize">
+       <option class="dropdown-item" ></option>
+              </select>
+     <script>
+           $(document).ready(function () {
+      $('select').selectize({
+          sortField: 'text'
+      });
+  });
+     </script>
+
+        <canvas id="line-chart" width="800" height="550"></canvas>
+
+      </div>
+    </div>
+  </div>
+</div>
+   <script>
+
+   $("#newSkill").change(function(){
+var combodata = document.getElementById("newSkill").options[document.getElementById('newSkill').selectedIndex].text;
+$.ajax({
+type: 'POST',
+  url: '/timeSeries',
+  data: combodata,
+  success: function(data){
+        var date=data.date
+        var confirm=data.confirm
+        var death=data.death
+        var recover=data.recover
+        console.log(confirm)
+ new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+        labels:date,
+        datasets: [{
+            data:confirm,
+            label: "Confirm",
+            borderColor: "#3e95cd",
+            fill: false
+          }, {
+            data:death,
+            label: "Death",
+            borderColor: "#8e5ea2",
+            fill: false
+          }, {
+            data: recover,
+            label: "Recover",
+            borderColor: "#3cba9f",
+            fill: false
+          }
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+           text: combodata+' COVID-19 Situation'
+    }
+  }
+});
+     }
+});
+});
+
+       $.ajax({
+        url:'/timeSeries'
+    }).done(function(res) {
+   for (i = 1; i <res.combo.length; i++){
+  var ele = document.createElement("option");
+    ele.classList = "dropdown-item";
+    ele.innerText =res.combo[i];
+    document.querySelector(".dropdown-menus").appendChild(ele);
+  }
+       new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+        labels:res.date,
+        datasets: [{
+            data: res.confirm,
+            label: "Confirm",
+            borderColor: "#3e95cd",
+            fill: false
+          }, {
+            data: res.death,
+            label: "Death",
+            borderColor: "#8e5ea2",
+            fill: false
+          }, {
+            data: res.recover,
+            label: "Recover",
+            borderColor: "#3cba9f",
+            fill: false
+          }
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'China COVID-19 Situation'
+    }
+  }
+});
+ });
+
+   </script>
+
+<script>
+    $.ajax({
+        url:'/global'
+    }).done(function(res) {
+    new Chart(document.getElementById("bar-chart-grouped"), {
+    type: 'bar',
+    data: {
+      labels:res.country,
+      datasets: [
+        {
+          label: "Case",
+          backgroundColor: "#3e95cd",
+          data:res.case
+        },   {
+          label: "Death",
+          backgroundColor: "#FF0000",
+          data: res.death
+        },{
+          label: "Recover",
+          backgroundColor: "#8e5ea2",
+          data: res.recover
+        }
+      ]
+    },
+    options: { responsive: true,
+            maintainAspectRatio: false,
+      title: {
+        display: true,
+        text: 'Countries With Highest of CoVid19 Cases'
+      }
+    }
+});
+  });
+
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>
+<script>
+function myFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+
+var d = new Date();
+document.getElementById("date").innerHTML = d;
+</script>
+<script>
+    function onRowClick(tableId, callback) {
+    var table = document.getElementById(tableId),
+        rows = table.getElementsByTagName("tr"),
+        i;
+    for (i = 0; i < rows.length; i++) {
+        table.rows[i].onclick = function (row) {
+            return function () {
+                callback(row);
+            };
+        }(table.rows[i]);
+    }
+};
+
+onRowClick("myTable", function (row){
+    var value = row.getElementsByTagName("td")[0].innerHTML;
+    $.ajax({
+  type: 'POST',
+  url: '/country',
+  data: value,
+  success: function(data){
+          $('#country').text('Country: '+data.country);
+          $('#totalcase').text('Total Case: '+data.cases);
+           $('#totalrecover').text('Total Recover: '+data.recovered);
+            $('#totaldeath').text('Total Deaths: '+data.deaths);
+             $('#todaycase').text('Today Case: '+data.todayCases);
+              $('#todaydeath').text('Today Death: '+data.todayDeaths);
+     }
+
+});
+});
+
+
+</script>
+ <script>
+$("#newSkill").change(function(){
+var kamote = document.getElementById("newSkill").options[document.getElementById('newSkill').selectedIndex].text;
+
+});
+  </script>
