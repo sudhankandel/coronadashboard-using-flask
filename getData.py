@@ -169,7 +169,7 @@ def caseforcast():
                                 enforce_invertibility=False)
 
     results = mod.fit()
-    pred = results.get_prediction(start=pd.to_datetime('2020-08-3') ,dynamic=False)
+    pred = results.get_prediction(start=pd.to_datetime('2020-09-06') ,dynamic=False)
     y_forecasted = pred.predicted_mean
-    data=int(round(y_forecasted))
+    data=int(round(y_forecasted[0]))
     return data
